@@ -1,0 +1,41 @@
+# Ambiente virtual
+venv/
+env/
+
+# Arquivos de configuração sensíveis
+*.env
+instance/
+
+# Arquivos de cache do Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.pkl
+
+# Banco de dados SQLite
+*.db
+*.sqlite3
+
+# Logs e relatórios
+*.log
+*.out
+*.pid
+
+# Arquivos criados pelo Flask-SQLAlchemy
+migrations/
+
+# Arquivos de cache do IDE
+.idea/
+.vscode/
+*.swp
+
+# Outras entradas temporárias ou irrelevantes
+*.bak
+*.tmp
+*.orig
+*.~*
+
+# Configurações específicas do sistema operacional
+.DS_Store
+Thumbs.db
