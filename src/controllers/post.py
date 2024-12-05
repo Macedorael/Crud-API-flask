@@ -14,3 +14,15 @@ def _create_post():
     db.session.add(post)
     db.session.commit()
 
+def _list_posts():
+    query = db.select(User)
+    users = db.session.execute(query).scalars()
+    return [
+        {
+            'id': user.id,
+            'title': user.title,
+            'body': user.body,
+            'author_id': user.author_id,
+        } 
+        for user in users
+    ]
