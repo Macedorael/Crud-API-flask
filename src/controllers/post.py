@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from src.app import User, db
+from src.app import Post, db
 from http import HTTPStatus
 from sqlalchemy import inspect
 
@@ -8,21 +8,29 @@ app = Blueprint('post', __name__, url_prefix='/posts')
 
 def _create_post():
     data =  request.json
-    post = User(title=data['title'],
+    post = Post(title=data['title'],
                 body=data['body'],
                 author_id=data['author_id'])
     db.session.add(post)
     db.session.commit()
 
 def _list_posts():
-    query = db.select(User)
-    users = db.session.execute(query).scalars()
+    query = db.select(Post)
+    posts = db.session.execute(query).scalars()
     return [
         {
-            'id': user.id,
-            'title': user.title,
-            'body': user.body,
-            'author_id': user.author_id,
+            'id': post.id,
+            'title': post.title,
+            'body': post.body,
+            'author_id': post.author_id,
         } 
-        for user in users
+        for post in posts
     ]
+
+@app.route('/', methods=['GET', 'POST'])
+def handle_user():
+    if request.method == 'POST':
+        _create_post()
+        return {'message': 'Post created'}, HTTPStatus.CREATED
+    else:
+        return {'message': _list_posts()}
