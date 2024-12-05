@@ -63,3 +63,11 @@ def update_post(post_id):
         'body': post.body,
         'author_id': post.author_id
     }
+
+@app.route('/<int:post_id>', methods=['DELETE'])
+def delete_post(post_id):
+    post = db.get_or_404(Post, post_id)
+    db.session.delete(post)
+    db.session.commit()
+
+    return " ", HTTPStatus.NO_CONTENT
