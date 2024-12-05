@@ -44,3 +44,22 @@ def get_post(post_id):
         'body': post.body,
         'author_id': post.author_id
     }
+
+@app.route('/<int:post_id>', methods=['PATCH'])
+def update_post(post_id):
+    post = db.get_or_404(Post, post_id)
+    data = request.json
+
+    #update user melhorado com mapper
+    mapper = inspect(Post)
+    for column in mapper.columns:
+        if column.key in data:
+            setattr(post, column.key, data[column.key])
+    db.session.commit()
+
+    return {
+        'id': post.id,
+        'title': post.title,
+        'body': post.body,
+        'author_id': post.author_id
+    }
