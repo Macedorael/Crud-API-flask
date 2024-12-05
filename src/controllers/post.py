@@ -34,3 +34,13 @@ def handle_user():
         return {'message': 'Post created'}, HTTPStatus.CREATED
     else:
         return {'message': _list_posts()}
+    
+@app.route('/<int:post_id>')
+def get_post(post_id):
+    post = db.get_or_404(Post, post_id)
+    return {
+        'id': post.id,
+        'title': post.title,
+        'body': post.body,
+        'author_id': post.author_id
+    }
