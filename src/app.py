@@ -6,19 +6,33 @@ from sqlalchemy.orm import DeclarativeBase
 import click
 import sqlalchemy as sa
 from flask_migrate import Migrate
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from flask_jwt_extended import JWTManager
+
+
 
 class Base(DeclarativeBase):
   pass
 
 db = SQLAlchemy(model_class=Base)
 migrate = Migrate() #usado para versonamento de banco
+jwt = JWTManager()
+
+class Role(db.Model): 
+    id: Mapped[int] = mapped_column(sa.Integer, primary_key=True)
+    name: Mapped[str] = mapped_column(sa.String(30), unique=True, nullable=False)
+    user: Mapped[list["User"]] = relationship(back_populates="role")
+    
+    def __repr__(self):
+        return f"Role(id={self.id!r}, name={self.name!r}, active={self.active!r})"
 
 class User(db.Model):
     id: Mapped[int] = mapped_column(sa.Integer, primary_key=True)
     username: Mapped[str] = mapped_column(sa.String(30), unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(sa.String(30), nullable=False)
     active: Mapped[bool] = mapped_column(sa.Boolean, default=True)
-    
+    role_id: Mapped[int] = mapped_column(sa.ForeignKey("role.id"))
+    role: Mapped[list["Role"]] = relationship(back_populates="user")
     def __repr__(self):
         return f"User(id={self.id!r}, username={self.username!r}, active={self.active!r})"
 
@@ -45,6 +59,7 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SECRET_KEY='dev',
         SQLALCHEMY_DATABASE_URI='sqlite:///blog.sqlite',
+        JWT_SECRET_KEY = 'super-secret',
     )
 
     if test_config is None:
@@ -61,11 +76,15 @@ def create_app(test_config=None):
     migrate.init_app(app, db) #usado para versonamento de banco
 
     #register blueprints
-    from src.controllers import user, post
+    from src.controllers import auth, user, post, role
+    
     
 
     app.register_blueprint(user.app)
     app.register_blueprint(post.app)
+    app.register_blueprint(auth.app)
+    app.register_blueprint(role.app)
+    jwt.init_app(app)
 
     
     return app
