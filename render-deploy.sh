@@ -3,6 +3,7 @@ if [ ! -d "migrations" ]; then
 
     flask --app src.app db init
 fi
+flask --app src.app db migrate -m "Automated migration"
 # Atualizar o banco de dados
 flask --app src.app db upgrade
 
