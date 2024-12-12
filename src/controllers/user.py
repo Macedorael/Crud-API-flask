@@ -44,7 +44,7 @@ def handle_user():
 
 @app.route('/<int:user_id>')
 @jwt_required()
-@requires_role(allowed_roles=['Admin','normal'])
+
 def get_user(user_id):
     user = db.get_or_404(User, user_id)
     return {
