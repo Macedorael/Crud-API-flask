@@ -28,7 +28,7 @@ def _list_posts():
     ]
 
 @app.route('/', methods=['GET', 'POST'])
-def handle_user():
+def create_user():
     if request.method == 'POST':
         _create_post()
         return {'message': 'Post created'}, HTTPStatus.CREATED

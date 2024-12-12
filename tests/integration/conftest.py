@@ -35,4 +35,18 @@ def access_token(client):
     response = client.post('auth/login', json={'username': 'john', 'password': 'test'})
     return response.json['access_token']
 
+@pytest.fixture
+def access_user(client):
+    #criando uma role
+    role = Role(name='Admin')
+    db.session.add(role)
+    db.session.commit()
+
+    #criando um usuário para o login
+    user = User(username='john', password='test', role_id=role.id)
+    db.session.add(user)
+    db.session.commit()
+
+    reposponse = client.post('/users/', json={'username': 'john', 'password': 'test', 'role_id': role.id})
+    return reposponse
 
