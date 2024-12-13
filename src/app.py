@@ -4,9 +4,11 @@ from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
 from src.models import db
 from src.controllers import auth, user, post, role
+from flask_bcrypt import Bcrypt
 
 migrate = Migrate() #usado para versonamento de banco
 jwt = JWTManager()
+bcrypt = Bcrypt()
 
 
 def create_app(environment=os.environ['ENVIRONMENT']):
@@ -18,15 +20,13 @@ def create_app(environment=os.environ['ENVIRONMENT']):
     except OSError:
         pass
 
-    
+
     db.init_app(app)
-    migrate.init_app(app, db) #usado para versonamento de banco
+    migrate.init_app(app, db)
+    jwt.init_app(app)
+    bcrypt.init_app(app)
 
-    #register blueprints
     
-    
-    
-
     app.register_blueprint(user.app)
     app.register_blueprint(post.app)
     app.register_blueprint(auth.app)
