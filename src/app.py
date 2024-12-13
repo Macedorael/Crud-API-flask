@@ -12,11 +12,12 @@ jwt = JWTManager()
 def create_app(environment=os.environ['ENVIRONMENT']):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(f'src.config.{environment.title()}Config')
-    
 
+    try:
+        os.makedirs(app.instance_path)
+    except OSError:
+        pass
 
- 
-    
     
     db.init_app(app)
     migrate.init_app(app, db) #usado para versonamento de banco
